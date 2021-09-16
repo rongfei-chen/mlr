@@ -1,0 +1,3 @@
+[submodule "MultimodalSDK_loader"]
+	path = MultimodalSDK_loader
+	url = https://github.com/lobracost/MultimodalSDK_loader.git
