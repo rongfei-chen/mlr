@@ -39,7 +39,8 @@ def dataloaders():
     dataset_name = "cmumosi"
     seq_len = 20
     tensors = get_and_process_data(dataset_name, seq_len)
-    print(tensors.keys())
+    print(tensors[0]["COVAREP"].shape)
+    print(tensors[0]["FACET_4.2"].shape)
     """
     x = feature_stats
 
