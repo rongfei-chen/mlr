@@ -17,16 +17,22 @@ class ConvAutoEncoder(nn.Module):
 
         self.encoder = nn.Sequential(
             nn.Conv2d(1, first_channels, kernel_size),
-            nn.BatchNorm2d(),
+            nn.BatchNorm2d(first_channels),
             nn.ReLU(),
             nn.Conv2d(first_channels, self.cnn_channels * first_channels, kernel_size),
             nn.BatchNorm2d(self.cnn_channels * first_channels),
             nn.ReLU(),
-            nn.Conv2d(self.cnn_channels * first_channels, representation_dim, 3)
+            nn.Conv2d(self.cnn_channels * first_channels, (self.cnn_channels ** 2) * first_channels, 3),
+            nn.BatchNorm2d((self.cnn_channels ** 2) * first_channels),
+            nn.ReLU(),
+            nn.Conv2d((self.cnn_channels ** 2) * first_channels, representation_dim, 3)
         )
 
         self.decoder = nn.Sequential(
-            nn.ConvTranspose2d(representation_dim, self.cnn_channels * first_channels, 3),
+            nn.ConvTranspose2d(representation_dim, (self.cnn_channels ** 2) * first_channels, 3),
+            nn.BatchNorm2d((self.cnn_channels ** 2) * first_channels),
+            nn.ReLU(),
+            nn.ConvTranspose2d((self.cnn_channels ** 2) * first_channels, self.cnn_channels * first_channels, 3),
             nn.BatchNorm2d(self.cnn_channels * first_channels),
             nn.ReLU(),
             nn.ConvTranspose2d(self.cnn_channels * first_channels, first_channels, kernel_size),

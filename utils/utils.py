@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import torch
+import torch.nn as nn
 import sys
 import os
 
@@ -30,3 +31,12 @@ def seed_worker():
 
     np.random.seed(worker_seed)
     random.seed(worker_seed)
+
+
+def weights_init(m):
+
+    if isinstance(m, nn.Conv2d):
+        torch.nn.init.normal_(m.weight, 0.0, 0.02)
+    elif isinstance(m, nn.BatchNorm2d):
+        torch.nn.init.normal_(m.weight.data, 0.0, 0.02)
+        torch.nn.init.zeros_(m.bias)
