@@ -47,11 +47,12 @@ class EpochTrain:
             self.scheduler.step(epoch)
             running_loss = 0
             for it, x in enumerate(tepoch):
-                x = Variable(x).float().to(self.device)
+                x = Variable(x[:, :, 109:]).float().to(self.device)
                 x = x.unsqueeze(1)
+
                 with torch.set_grad_enabled(True):
                     # ===================forward=====================
-                    output = self.net(x)
+                    output, representation = self.net(x)
                     loss = self.criterion(output, x)
                     # ===================backward====================
                     self.optimizer.zero_grad()
@@ -77,11 +78,11 @@ class EpochTrain:
         actual = []
         running_loss = 0
         for x in self.val_loader:
-            x = Variable(x).float().to(self.device)
+            x = Variable(x[:, :, 109:]).float().to(self.device)
             x = x.unsqueeze(1)
             with torch.set_grad_enabled(False):
                 # ===================forward=====================
-                output = self.net(x)
+                output, representation = self.net(x)
                 loss = self.criterion(output, x)
                 pred.append(torch.squeeze(output.float()).detach().cpu().numpy())
                 actual.append(x.float().detach().cpu().numpy())
@@ -111,7 +112,7 @@ def train_and_validate():
     print(model)
     model.apply(utils.weights_init)
 
-    train_params = {'lr': 2e-3, 'max_epochs': 100,
+    train_params = {'lr': 2e-2, 'max_epochs': 100,
                     'batch_size': batch_size,
                     'device': device, 'print_every': 5}
 
