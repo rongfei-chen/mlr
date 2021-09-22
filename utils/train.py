@@ -47,7 +47,7 @@ class EpochTrain:
             self.scheduler.step(epoch)
             running_loss = 0
             for it, x in enumerate(tepoch):
-                x = Variable(x[:, :, 109:]).float().to(self.device)
+                x = Variable(x[:, :, 74:]).float().to(self.device)
                 x = x.unsqueeze(1)
 
                 with torch.set_grad_enabled(True):
@@ -78,7 +78,7 @@ class EpochTrain:
         actual = []
         running_loss = 0
         for x in self.val_loader:
-            x = Variable(x[:, :, 109:]).float().to(self.device)
+            x = Variable(x[:, :, 74:]).float().to(self.device)
             x = x.unsqueeze(1)
             with torch.set_grad_enabled(False):
                 # ===================forward=====================

@@ -37,16 +37,6 @@ class ConvEncoder(nn.Module):
             (self.cnn_channels ** 2) * first_channels, representation_dim, 3, stride=stride, padding=padding)
         self.pool4 = nn.MaxPool2d(kernel_size=4, return_indices=True)
 
-        self.fnn = nn.Sequential(
-            nn.GELU(),
-            nn.Linear(self.calc_out_size(), 1024),
-            nn.GELU(),
-            nn.Linear(1024, 512),
-            nn.Linear(512, 256),
-            nn.GELU(),
-            nn.Linear(256, representation_dim),
-        )
-
     def forward(self, x):
         x = self.conv1(x)
         size_1 = x.size()
@@ -59,11 +49,7 @@ class ConvEncoder(nn.Module):
         x, idx_3 = self.pool3(x)
         x = self.conv4(x)
         size_4 = x.size()
-        #print(size_4)
         x, idx_4 = self.pool4(x)
-
-
-       # x = self.fnn(x)
 
         return x, [idx_4, idx_3, idx_2, idx_1], [size_4, size_3, size_2, size_1]
 
@@ -115,13 +101,6 @@ class ConvDecoder(nn.Module):
         self.unconv4 = nn.Sequential(
             nn.ConvTranspose2d(first_channels, 1, kernel_size, stride=stride, padding=padding),
             nn.Sigmoid())
-            #nn.GELU(),
-            #nn.Linear(self.calc_out_size(), 1024),
-            #nn.GELU(),
-            #nn.Linear(1024, 512),
-            #nn.Linear(512, 256),
-            #nn.GELU(),
-            #nn.Linear(256, representation_dim),
 
     def forward(self, x, pool_indices, pool_sizes):
         x = self.unpool0(x, pool_indices[0], output_size=pool_sizes[0])
