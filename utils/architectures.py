@@ -98,9 +98,7 @@ class ConvDecoder(nn.Module):
             nn.GELU())
         self.unpool3 = nn.MaxUnpool2d(kernel_size=2)
 
-        self.unconv4 = nn.Sequential(
-            nn.ConvTranspose2d(first_channels, 1, kernel_size, stride=stride, padding=padding),
-            nn.Sigmoid())
+        self.unconv4 = nn.ConvTranspose2d(first_channels, 1, kernel_size, stride=stride, padding=padding)
 
     def forward(self, x, pool_indices, pool_sizes):
         x = self.unpool0(x, pool_indices[0], output_size=pool_sizes[0])

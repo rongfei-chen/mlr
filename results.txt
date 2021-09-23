@@ -2,3 +2,4 @@
 - cmumosei: mse = 0.0006906125376405988
 - iemocap: mse =  0.0007983066177985165
 - cmumosei + iemocap: mse = 0.030490138586000762
+- pretrained cmumosei tuned on iemocap: mse = 0.000909824477566871
