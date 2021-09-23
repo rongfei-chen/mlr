@@ -137,7 +137,7 @@ def train_and_validate():
 
         epoch_loss, epoch_score = epoch_trainer.train(epoch)
 
-        if epoch_score > best_score:
+        if epoch_score < best_score:
             early_stop_counter = 0
             best_epoch = epoch + 1
             best_score = epoch_score
@@ -147,8 +147,9 @@ def train_and_validate():
     model = architectures.ConvAutoEncoder(20, 409).to(device)
     model.load_state_dict(torch.load('output/ConvAE_Checkpoint.pt'))
     torch.save(model.state_dict(), 'output/ConvAE.pt')
+    epoch_trainer.net = model
     epoch_score = epoch_trainer.validate(print_results=True)
-    print("Epoch score: {}".format(epoch_score))
+    print("Best score: {}".format(epoch_score))
 
 
 if __name__ == "__main__":
