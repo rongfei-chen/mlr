@@ -1,3 +1,4 @@
 ## Convolutional Autoencoder
 - cmumosei: mse = 0.0006906125376405988
 - iemocap: mse =  0.0007983066177985165
+- cmumosei + iemocap: mse = 0.030490138586000762
