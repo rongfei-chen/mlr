@@ -1,0 +1,2 @@
+## Convolutional Autoencoder
+- cmumosei: mse= 0.0006906125376405988

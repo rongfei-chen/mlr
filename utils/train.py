@@ -126,7 +126,7 @@ def train_and_validate():
         model, train_params['batch_size'], train_loader, val_loader,
         optimizer, scheduler, criterion, train_params['device'])
 
-    best_score = 0
+    best_score = 100
     best_epoch = 1
     early_stop_counter = 0
     for epoch in range(train_params['max_epochs']):
