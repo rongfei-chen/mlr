@@ -29,6 +29,10 @@ class RepresentationDataset(Dataset):
         return self.X[index]
 
 
+def stack_features(*features_stats):
+    return np.dstack([*features_stats])
+
+
 def scale(x, maximum=None, minimum=None):
 
     if maximum is None and minimum is None:
@@ -46,12 +50,36 @@ def scale(x, maximum=None, minimum=None):
         return (x - minimum) / (maximum - minimum)
 
 
-def scale_by_modality(x_train, x_val, x_test, up, down):
-    x_train[:, :, up:down], maximum, minimum = scale(x_train[:, :, up:down])
-    x_val[:, :, up:down] = scale(x_val[:, :, up:down], maximum, minimum)
-    x_test[:, :, up:down] = scale(x_test[:, :, up:down], maximum, minimum)
+def scale_by_modality(x_train, x_val, x_test, down, up):
+    x_train[:, :, down:up], maximum, minimum = scale(x_train[:, :, down:up])
+    x_val[:, :, down:up] = scale(x_val[:, :, down:up], maximum, minimum)
+    x_test[:, :, down:up] = scale(x_test[:, :, down:up], maximum, minimum)
 
     return x_train, x_val, x_test
+
+
+def dataset_features(dataset_name):
+    if dataset_name == "cmumosei":
+        seq_len = 20
+        x_train, y_train, x_val, y_val, x_test, y_test = get_feature_matrix(dataset_name, seq_len)
+
+    elif dataset_name == "iemocap":
+        with open(r"data/iemocap_seq_20.pkl", "rb") as input_file:
+            iemocap_data = pickle.load(input_file)
+        y_train = iemocap_data["train"]["labels"]
+        y_val = iemocap_data["valid"]["labels"]
+        y_test = iemocap_data["test"]["labels"]
+        x_train = stack_features(
+            iemocap_data["train"]["audio"], iemocap_data["train"]["vision"], iemocap_data["train"]["text"])
+        x_val = stack_features(
+            iemocap_data["valid"]["audio"], iemocap_data["valid"]["vision"], iemocap_data["valid"]["text"])
+        x_test = stack_features(
+            iemocap_data["test"]["audio"], iemocap_data["test"]["vision"], iemocap_data["test"]["text"])
+
+    x_train, x_val, x_test = scale_by_modality(x_train, x_val, x_test, 0, 74)
+    x_train, x_val, x_test = scale_by_modality(x_train, x_val, x_test, 74, 109)
+    x_train, x_val, x_test = scale_by_modality(x_train, x_val, x_test, 109, 409)
+    return x_train, y_train, x_val, y_val, x_test, y_test
 
 
 def dataloaders():
@@ -59,15 +87,7 @@ def dataloaders():
     seed = 42
     utils.seed_all(seed)
 
-    dataset_name = "cmumosei"
-    seq_len = 20
-    x_train, y_train, x_val, y_val, x_test, y_test = get_feature_matrix(dataset_name, seq_len)
-
-    x_train, x_val, x_test = scale_by_modality(x_train, x_val, x_test, 0, 74)
-    x_train, x_val, x_test = scale_by_modality(x_train, x_val, x_test, 74, 109)
-    x_train, x_val, x_test = scale_by_modality(x_train, x_val, x_test, 109, 409)
-
-    # TODO: scaling
+    x_train, y_train, x_val, y_val, x_test, y_test = dataset_features("iemocap")
 
     train_set = RepresentationDataset(x_train)
     val_set = RepresentationDataset(x_val)
