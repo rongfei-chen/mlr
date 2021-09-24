@@ -5,11 +5,14 @@ import torch
 from torch.autograd import Variable
 from imblearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
+from imblearn.over_sampling import SMOTE
+from imblearn.combine import SMOTETomek
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import classification_report
+from sklearn.metrics import f1_score
 from collections import Counter
 
 
@@ -19,6 +22,10 @@ sys.path.insert(0, os.path.join(
 import utils.utils as utils
 import utils.dataloading as dataloading
 import utils.architectures as architectures
+
+
+def one_vs_all_labels(labels, positive_label):
+    return [1 if label == positive_label else 0 for label in labels]
 
 
 def get_representations(model, dataloader, device):
@@ -48,7 +55,8 @@ print("Running on: {}".format(device))
 model = architectures.ConvAutoEncoder(20, 409).to(device)
 model.load_state_dict(torch.load('output/ConvAE_all.pt'))
 
-train_loader, val_loader, test_loader = dataloading.classification_dataloaders("cmumosi")
+dataset_name = "iemocap"
+train_loader, val_loader, test_loader = dataloading.classification_dataloaders(dataset_name)
 
 x_train, y_train = get_representations(model, train_loader, device)
 x_val, y_val = get_representations(model, val_loader, device)
@@ -56,10 +64,26 @@ x_train = np.concatenate((x_train, x_val))
 y_train = y_train + y_val
 x_test, y_test = get_representations(model, test_loader, device)
 
-print(Counter(y_train))
-pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression())])
+if dataset_name == "iemocap":
+    y_train_init = y_train
+    y_test_init = y_test
+    for label in range(4):
+        y_train = one_vs_all_labels(y_train_init, label)
+        y_test = one_vs_all_labels(y_test_init, label)
+        print("-------------------Label {}-------------------".format(label))
+        print(Counter(y_train))
+        pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression())])
 
-pipe.fit(x_train, y_train)
-preds = pipe.predict(x_test)
+        pipe.fit(x_train, y_train)
+        preds = pipe.predict(x_test)
 
-print(classification_report(y_test, preds))
+        print(classification_report(y_test, preds))
+
+else:
+    print(Counter(y_train))
+    pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression())])
+
+    pipe.fit(x_train, y_train)
+    preds = pipe.predict(x_test)
+
+    print(classification_report(y_test, preds))
