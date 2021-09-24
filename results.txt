@@ -12,10 +12,10 @@
 - cmumosei: Acc2 = 0.74, F1_weighted = 0.71
 - iemocap:
     - Happy:
-        Acc2 = 0.85, F1_weighted = 0.8
+        Acc2 = 0.86, F1_weighted = 0.8
     - Sad:
-        Acc2 = 0.79, F1_weighted = 0.74
+        Acc2 = 0.78, F1_weighted = 0.75
     - Angry:
-        Acc2 = 0.81, F1_weighted = 0.8
+        Acc2 = 0.80, F1_weighted = 0.79
     - Neutral:
-        Acc2 = 0.62, F1_weighted = 0.59
+        Acc2 = 0.64, F1_weighted = 0.62
