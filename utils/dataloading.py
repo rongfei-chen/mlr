@@ -106,17 +106,6 @@ def dataloaders():
     x_val = np.concatenate((x_val, x_val_tmp))
     x_test = np.concatenate((x_test, x_test_tmp))
 
-    x_train_classification = x_train_tmp
-    y_train_classification = y_train_tmp
-    x_val_classification = x_val_tmp
-    y_val_classification = y_val_tmp
-    x_test_classification = x_test_tmp
-    y_test_classification = y_test_tmp
-
-    calssification = (
-        x_train_classification, y_train_classification,
-        x_val_classification, y_val_classification,
-        x_test_classification, y_test_classification)
     x_train_tmp, y_train_tmp, x_val_tmp, y_val_tmp, x_test_tmp, y_test_tmp = dataset_features("iemocap")
     x_train = np.concatenate((x_train, x_train_tmp))
     x_val = np.concatenate((x_val, x_val_tmp))
