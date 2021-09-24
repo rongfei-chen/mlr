@@ -29,6 +29,18 @@ class RepresentationDataset(Dataset):
         return self.X[index]
 
 
+class ClassificationDataset(Dataset):
+    def __init__(self, X, y):
+        self.X = X
+        self.y = y
+
+    def __len__(self):
+        return len(self.y)
+
+    def __getitem__(self, index):
+        return self.X[index], self.y[index]
+
+
 def stack_features(*features_stats):
     return np.dstack([*features_stats])
 
@@ -94,6 +106,17 @@ def dataloaders():
     x_val = np.concatenate((x_val, x_val_tmp))
     x_test = np.concatenate((x_test, x_test_tmp))
 
+    x_train_classification = x_train_tmp
+    y_train_classification = y_train_tmp
+    x_val_classification = x_val_tmp
+    y_val_classification = y_val_tmp
+    x_test_classification = x_test_tmp
+    y_test_classification = y_test_tmp
+
+    calssification = (
+        x_train_classification, y_train_classification,
+        x_val_classification, y_val_classification,
+        x_test_classification, y_test_classification)
     x_train_tmp, y_train_tmp, x_val_tmp, y_val_tmp, x_test_tmp, y_test_tmp = dataset_features("iemocap")
     x_train = np.concatenate((x_train, x_train_tmp))
     x_val = np.concatenate((x_val, x_val_tmp))
@@ -113,3 +136,50 @@ def dataloaders():
 
 
 train_loader, val_loader, test_loader, batch_size = dataloaders()
+
+
+def cmumosei_round(a):
+    if a < -2:
+        res = -3
+    if -2 <= a and a < -1:
+        res = -2
+    if -1 <= a and a < 0:
+        res = -1
+    if 0 <= a and a <= 0:
+        res = 0
+    if 0 < a and a <= 1:
+        res = 1
+    if 1 < a and a <= 2:
+        res = 2
+    if a > 2:
+        res = 3
+    return res
+
+
+def binary_sentiment(a):
+    label = cmumosei_round(a)
+    if label >= 0:
+        return 1
+    else:
+        return 0
+
+
+def classification_dataloaders(dataset_name):
+
+    x_train, y_train, x_val, y_val, x_test, y_test = dataset_features(dataset_name)
+
+    y_train = [binary_sentiment(y) for y in y_train]
+    y_val = [binary_sentiment(y) for y in y_val]
+    y_test = [binary_sentiment(y) for y in y_test]
+
+    train_set = ClassificationDataset(x_train, y_train)
+    val_set = ClassificationDataset(x_val, y_val)
+    test_set = ClassificationDataset(x_test, y_test)
+
+    batch_size = 32
+
+    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=False, worker_init_fn=utils.seed_worker)
+    val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, worker_init_fn=utils.seed_worker)
+    test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False, worker_init_fn=utils.seed_worker)
+
+    return train_loader, val_loader, test_loader
