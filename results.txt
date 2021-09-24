@@ -1,5 +1,9 @@
 ## Convolutional Autoencoder
-- cmumosei: mse = 0.0006906125376405988
-- iemocap: mse =  0.0007983066177985165
-- cmumosei + iemocap: mse = 0.030490138586000762
-- pretrained cmumosei tuned on iemocap: mse = 0.000909824477566871
+- cmumosei: mse = 0.0004015452756856714
+- cmumosi: mse = 0.000969427235499357
+- iemocap: mse =  0.0005206281587743434
+
+- cmumosei + cmumosi: mse = 0.0004288910031942633
+- cmumosei + iemocap: mse = 0.000507088719467945
+
+- cmumosei + cmumosi + iemocap: mse = 0.0005268202556300701

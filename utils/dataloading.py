@@ -88,9 +88,13 @@ def dataloaders():
     utils.seed_all(seed)
 
     x_train, y_train, x_val, y_val, x_test, y_test = dataset_features("cmumosei")
-    #x_train_tmp, y_train_tmp, x_val_tmp, y_val_tmp, x_test_tmp, y_test_tmp = dataset_features("cmumosi")
 
-    #x_train_tmp, y_train_tmp, x_val_tmp, y_val_tmp, x_test_tmp, y_test_tmp = dataset_features("iemocap")
+    x_train_tmp, y_train_tmp, x_val_tmp, y_val_tmp, x_test_tmp, y_test_tmp = dataset_features("cmumosi")
+    x_train = np.concatenate((x_train, x_train_tmp))
+    x_val = np.concatenate((x_val, x_val_tmp))
+    x_test = np.concatenate((x_test, x_test_tmp))
+
+    x_train_tmp, y_train_tmp, x_val_tmp, y_val_tmp, x_test_tmp, y_test_tmp = dataset_features("iemocap")
     x_train = np.concatenate((x_train, x_train_tmp))
     x_val = np.concatenate((x_val, x_val_tmp))
     x_test = np.concatenate((x_test, x_test_tmp))
