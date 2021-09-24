@@ -10,6 +10,7 @@ from imblearn.combine import SMOTETomek
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
+from imblearn.ensemble import BalancedRandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import classification_report
 from sklearn.metrics import f1_score
@@ -65,12 +66,13 @@ y_train = y_train + y_val
 x_test, y_test = get_representations(model, test_loader, device)
 
 if dataset_name == "iemocap":
+    iemocap_emotions = ["Neutral", "Happy", "Sad", "Angry"]
     y_train_init = y_train
     y_test_init = y_test
     for label in range(4):
         y_train = one_vs_all_labels(y_train_init, label)
         y_test = one_vs_all_labels(y_test_init, label)
-        print("-------------------Label {}-------------------".format(label))
+        print("-------------------Label {}-------------------".format(iemocap_emotions[label]))
         print(Counter(y_train))
         pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression())])
 
@@ -78,7 +80,6 @@ if dataset_name == "iemocap":
         preds = pipe.predict(x_test)
 
         print(classification_report(y_test, preds))
-
 else:
     print(Counter(y_train))
     pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression())])
