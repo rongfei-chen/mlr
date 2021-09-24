@@ -7,3 +7,15 @@
 - cmumosei + iemocap: mse = 0.000507088719467945
 
 - cmumosei + cmumosi + iemocap: mse = 0.0005268202556300701
+
+## Classification
+- cmumosei: Acc2 = 0.74, F1_weighted = 0.71
+- iemocap:
+    - Happy:
+        Acc2 = 0.85, F1_weighted = 0.8
+    - Sad:
+        Acc2 = 0.79, F1_weighted = 0.74
+    - Angry:
+        Acc2 = 0.81, F1_weighted = 0.8
+    - Neutral:
+        Acc2 = 0.62, F1_weighted = 0.59
