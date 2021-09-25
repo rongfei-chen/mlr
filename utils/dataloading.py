@@ -156,7 +156,7 @@ def sentiment_labels(a, dataset_name):
         label_2 = 1
     else:
         label_2 = 0
-    return label_2, label_7 + 3, reg_label
+    return label_2, label_7, reg_label
 
 
 def iemocap_label(classes_2d):
