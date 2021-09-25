@@ -55,7 +55,7 @@ device = torch.device("cuda:0" if use_cuda else "cpu")
 print("Running on: {}".format(device))
 
 model = architectures.ConvAutoEncoder(20, 409).to(device)
-model.load_state_dict(torch.load('output/ConvAE_mosei_iemocap.pt'))
+model.load_state_dict(torch.load('output/ConvAE_all.pt'))
 
 dataset_name = "iemocap"
 train_loader, val_loader, test_loader = dataloading.classification_dataloaders(dataset_name)
@@ -82,6 +82,25 @@ for label in range(4):
     preds = pipe.predict(x_test)
 
     print(classification_report(y_test, preds))
+
+print("---> Classification for CMU-MOSI")
+
+dataset_name = "cmumosi"
+train_loader, val_loader, test_loader = dataloading.classification_dataloaders(dataset_name)
+
+x_train, y_train = get_representations(model, train_loader, device)
+x_val, y_val = get_representations(model, val_loader, device)
+x_train = np.concatenate((x_train, x_val))
+y_train = y_train + y_val
+x_test, y_test = get_representations(model, test_loader, device)
+
+print(Counter(y_train))
+pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression(random_state=42))])
+
+pipe.fit(x_train, y_train)
+preds = pipe.predict(x_test)
+
+print(classification_report(y_test, preds))
 
 print("---> Classification for CMU-MOSEI")
 

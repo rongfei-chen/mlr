@@ -10,6 +10,7 @@
 
 ## Classification
 - cmumosei: Acc2 = 0.74, F1_weighted = 0.71
+-cmumosi: Acc2 = 0.58, F1_weigthed = 0.57
 - iemocap:
     - Happy:
         Acc2 = 0.86, F1_weighted = 0.8
