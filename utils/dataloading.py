@@ -146,12 +146,17 @@ def cmumosei_round(a):
     return res
 
 
-def binary_sentiment(a):
-    label = cmumosei_round(a)
-    if label >= 0:
-        return 1
+def sentiment_labels(a, dataset_name):
+    if dataset_name == "cmumosi":
+        reg_label = a[0][0]
     else:
-        return 0
+        reg_label = a
+    label_7 = cmumosei_round(a)
+    if label_7 >= 0:
+        label_2 = 1
+    else:
+        label_2 = 0
+    return label_2, label_7 + 3, reg_label
 
 
 def iemocap_label(classes_2d):
@@ -160,19 +165,19 @@ def iemocap_label(classes_2d):
             return idx
 
 
-def classification_dataloaders(dataset_name):
+def classification_dataloaders(dataset_name, dataset, idx=0):
 
-    x_train, y_train, x_val, y_val, x_test, y_test = dataset_features(dataset_name)
+    x_train, y_train, x_val, y_val, x_test, y_test = dataset
 
     if dataset_name == "cmumosi":
-        y_train = [binary_sentiment(y) for y in y_train]
-        y_val = [binary_sentiment(y) for y in y_val]
-        y_test = [binary_sentiment(y) for y in y_test]
+        y_train = [sentiment_labels(y, dataset_name)[idx] for y in y_train]
+        y_val = [sentiment_labels(y, dataset_name)[idx] for y in y_val]
+        y_test = [sentiment_labels(y, dataset_name)[idx] for y in y_test]
     elif dataset_name == "cmumosei":
 
-        y_train = [binary_sentiment(y[0]) for y in y_train.squeeze()]
-        y_val = [binary_sentiment(y[0]) for y in y_val.squeeze()]
-        y_test = [binary_sentiment(y[0]) for y in y_test.squeeze()]
+        y_train = [sentiment_labels(y[0], dataset_name)[idx] for y in y_train.squeeze()]
+        y_val = [sentiment_labels(y[0], dataset_name)[idx] for y in y_val.squeeze()]
+        y_test = [sentiment_labels(y[0], dataset_name) [idx]for y in y_test.squeeze()]
     elif dataset_name == "iemocap":
         y_train = [iemocap_label(y) for y in y_train]
         y_val = [iemocap_label(y) for y in y_val]
