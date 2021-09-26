@@ -94,13 +94,12 @@ def dataset_features(dataset_name):
     return x_train, y_train, x_val, y_val, x_test, y_test
 
 
-def dataloaders():
+def representation_dataloaders():
     torch.cuda.empty_cache()
     seed = 42
     utils.seed_all(seed)
 
     x_train, y_train, x_val, y_val, x_test, y_test = dataset_features("cmumosei")
-
 
     x_train_tmp, y_train_tmp, x_val_tmp, y_val_tmp, x_test_tmp, y_test_tmp = dataset_features("cmumosi")
     x_train = np.concatenate((x_train, x_train_tmp))
@@ -123,9 +122,6 @@ def dataloaders():
     test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False, worker_init_fn=utils.seed_worker)
 
     return train_loader, val_loader, test_loader, batch_size
-
-
-train_loader, val_loader, test_loader, batch_size = dataloaders()
 
 
 def cmumosei_round(a):
@@ -156,7 +152,7 @@ def sentiment_labels(a, dataset_name):
         label_2 = 1
     else:
         label_2 = 0
-    return label_2, label_7, reg_label
+    return label_2, label_7 + 3, reg_label
 
 
 def iemocap_label(classes_2d):
@@ -177,7 +173,7 @@ def classification_dataloaders(dataset_name, dataset, idx=0):
 
         y_train = [sentiment_labels(y[0], dataset_name)[idx] for y in y_train.squeeze()]
         y_val = [sentiment_labels(y[0], dataset_name)[idx] for y in y_val.squeeze()]
-        y_test = [sentiment_labels(y[0], dataset_name) [idx]for y in y_test.squeeze()]
+        y_test = [sentiment_labels(y[0], dataset_name)[idx]for y in y_test.squeeze()]
     elif dataset_name == "iemocap":
         y_train = [iemocap_label(y) for y in y_train]
         y_val = [iemocap_label(y) for y in y_val]
@@ -193,4 +189,4 @@ def classification_dataloaders(dataset_name, dataset, idx=0):
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, worker_init_fn=utils.seed_worker)
     test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False, worker_init_fn=utils.seed_worker)
 
-    return train_loader, val_loader, test_loader
+    return train_loader, val_loader, test_loader, batch_size

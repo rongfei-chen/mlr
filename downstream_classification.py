@@ -61,7 +61,7 @@ model.load_state_dict(torch.load('output/ConvAE_all.pt'))
 dataset_name = "iemocap"
 
 dataset = dataloading.dataset_features(dataset_name)
-train_loader, val_loader, test_loader = dataloading.classification_dataloaders(dataset_name, dataset, 0)
+train_loader, val_loader, test_loader, _ = dataloading.classification_dataloaders(dataset_name, dataset, 0)
 
 x_train, y_train = get_representations(model, train_loader, device)
 x_val, y_val = get_representations(model, val_loader, device)
@@ -93,7 +93,7 @@ print("---> Classification for CMU-MOSI")
 dataset_name = "cmumosi"
 dataset = dataloading.dataset_features(dataset_name)
 
-train_loader, val_loader, test_loader = dataloading.classification_dataloaders(dataset_name, dataset, 1)
+train_loader, val_loader, test_loader, _ = dataloading.classification_dataloaders(dataset_name, dataset, 1)
 
 x_train, y_train = get_representations(model, train_loader, device)
 x_val, y_val = get_representations(model, val_loader, device)
@@ -106,6 +106,9 @@ pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression(random
 
 pipe.fit(x_train, y_train)
 preds = pipe.predict(x_test)
+
+preds = np.array(preds) - 3
+y_test = np.array(y_test) - 3
 
 acc_7 = accuracy_score(y_test, preds)
 
@@ -122,7 +125,7 @@ print("---> Classification for CMU-MOSEI")
 dataset_name = "cmumosei"
 dataset = dataloading.dataset_features(dataset_name)
 
-train_loader, val_loader, test_loader = dataloading.classification_dataloaders(dataset_name, dataset, 1)
+train_loader, val_loader, test_loader, _ = dataloading.classification_dataloaders(dataset_name, dataset, 1)
 x_train, y_train = get_representations(model, train_loader, device)
 x_val, y_val = get_representations(model, val_loader, device)
 x_train = np.concatenate((x_train, x_val))
@@ -134,6 +137,9 @@ pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression(random
 
 pipe.fit(x_train, y_train)
 preds = pipe.predict(x_test)
+
+preds = np.array(preds) - 3
+y_test = np.array(y_test) - 3
 
 acc_7 = accuracy_score(y_test, preds)
 
