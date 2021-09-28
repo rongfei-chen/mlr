@@ -45,29 +45,37 @@ def stack_features(*features_stats):
     return np.dstack([*features_stats])
 
 
-def scale(x, maximum=None, minimum=None):
-
-    if maximum is None and minimum is None:
-        maximum = x.max()
-        minimum = x.min()
-        if minimum == -inf:
-            tmp = x
+def drop_inf(x_train, x_val, x_test):
+    for idx in range(x_train.shape[2]):
+        if x_train[:, :, idx].min() == -inf:
+            tmp = x_train[:, :, idx]
             tmp[tmp == -inf] = 0
             minimum = tmp.min()
-            x[x == -inf] = minimum
-        return (x - minimum) / (maximum - minimum), maximum, minimum
-    else:
-        if x.min() == -inf:
-            x[x == -inf] = minimum
-        return (x - minimum) / (maximum - minimum)
 
-
-def scale_by_modality(x_train, x_val, x_test, down, up):
-    x_train[:, :, down:up], maximum, minimum = scale(x_train[:, :, down:up])
-    x_val[:, :, down:up] = scale(x_val[:, :, down:up], maximum, minimum)
-    x_test[:, :, down:up] = scale(x_test[:, :, down:up], maximum, minimum)
+            x_train[:, :, idx][x_train[:, :, idx] == -inf] = minimum
+            x_val[:, :, idx][x_val[:, :, idx] == -inf] = minimum
+            x_test[:, :, idx][x_test[:, :, idx] == -inf] = minimum
 
     return x_train, x_val, x_test
+
+
+def scale_2d_min_max(x, maximum=None, minimum=None):
+
+    if maximum is None and minimum is None:
+        minimum = x.min(axis=(0, 1), keepdims=True)
+        maximum = x.max(axis=(0, 1), keepdims=True)
+    x = (x - minimum) / (maximum - minimum + 1e-10)
+
+    return x, maximum, minimum
+
+
+def scale_2d_standard(x, mu=None, std=None):
+    if mu is None and std is None:
+        mu = x.mean(axis=(0, 1), keepdims=True)
+        std = x.std(axis=(0, 1), keepdims=True)
+    x = (x - mu) / (std + 1e-10)
+
+    return x, mu, std
 
 
 def dataset_features(dataset_name):
@@ -88,9 +96,17 @@ def dataset_features(dataset_name):
         x_test = stack_features(
             iemocap_data["test"]["audio"], iemocap_data["test"]["vision"], iemocap_data["test"]["text"])
 
-    x_train, x_val, x_test = scale_by_modality(x_train, x_val, x_test, 0, 74)
-    x_train, x_val, x_test = scale_by_modality(x_train, x_val, x_test, 74, 109)
-    x_train, x_val, x_test = scale_by_modality(x_train, x_val, x_test, 109, 409)
+    x_train, x_val, x_test = drop_inf(x_train, x_val, x_test)
+
+    x_train, mu, std = scale_2d_standard(x_train)
+    x_val, _, _ = scale_2d_standard(x_val, mu, std)
+    x_test, _, _ = scale_2d_standard(x_test, mu, std)
+
+    x_train, maximum, minimum = scale_2d_min_max(x_train)
+    x_val, _, _ = scale_2d_min_max(x_val, maximum, minimum)
+    x_test, _, _ = scale_2d_min_max(x_test, maximum, minimum)
+
+
     return x_train, y_train, x_val, y_val, x_test, y_test
 
 

@@ -56,7 +56,7 @@ device = torch.device("cuda:0" if use_cuda else "cpu")
 print("Running on: {}".format(device))
 
 model = architectures.ConvAutoEncoder(20, 409).to(device)
-model.load_state_dict(torch.load('output/ConvAE_all.pt'))
+model.load_state_dict(torch.load('output/ConvAE.pt'))
 
 dataset_name = "iemocap"
 
@@ -64,6 +64,7 @@ dataset = dataloading.dataset_features(dataset_name)
 train_loader, val_loader, test_loader, _ = dataloading.classification_dataloaders(dataset_name, dataset, 0)
 
 x_train, y_train = get_representations(model, train_loader, device)
+print("Representation dimension: {}".format(x_train.shape[1]))
 x_val, y_val = get_representations(model, val_loader, device)
 x_train = np.concatenate((x_train, x_val))
 y_train = y_train + y_val

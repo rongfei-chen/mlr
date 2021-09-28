@@ -40,7 +40,6 @@ class EpochTrain:
 
     def train(self, epoch):
         self.net.train()
-        self.scheduler.step(epoch)
         running_loss = 0.0
 
         with tqdm(self.train_loader, unit="batch") as tepoch:
@@ -111,10 +110,11 @@ class EpochTrain:
                     actual.append(x.float().detach().cpu().numpy())
                 running_loss += loss.item() * x.size(0)
 
-            actuals = [item for sublist in actual for item in sublist]
-            preds = [item for sublist in pred for item in sublist]
+            #actuals = [item for sublist in actual for item in sublist]
+            #preds = [item for sublist in pred for item in sublist]
 
-            score = mean_squared_error(actuals, preds)
+            score = running_loss / (len(self.val_loader) * self.batch_size)
+
         else:
 
             for x, y in self.val_loader:
@@ -205,11 +205,11 @@ def train_and_validate(task="representation_learning", dataset_name="cmumosei"):
     model.load_state_dict(torch.load('output/ConvAE_Checkpoint.pt'))
     torch.save(model.state_dict(), 'output/ConvAE.pt')
     epoch_trainer.net = model
-    epoch_score = epoch_trainer.validate(print_results=True, metric=metric)
+    epoch_score = epoch_trainer.validate()
     print("Best score: {}".format(epoch_score))
 
 
 if __name__ == "__main__":
 
-    train_and_validate(task="classification")
+    train_and_validate(task="representation_learning")
 
