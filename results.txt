@@ -9,49 +9,25 @@
 - cmumosei + cmumosi + iemocap: mse = 0.0005268202556300701
 
 ## Classification
-
-Representation dimension: 255
+Representation dimension: 250
 ---> Classification for IEMOCAP
 
-Neutral: Acc2 = 0.6396588486140725, binary F1_weighted 0.6181749789606079
+Neutral: Acc2 = 0.6385927505330491, binary F1_weighted 0.6091416375733332
 
-Happy: Acc2 = 0.8422174840085288, binary F1_weighted 0.7961114151473898
+Happy: Acc2 = 0.8582089552238806, binary F1_weighted 0.8160985602004056
 
-Sad: Acc2 = 0.8123667377398721, binary F1_weighted 0.7969964262419084
+Sad: Acc2 = 0.8230277185501066, binary F1_weighted 0.821264271348425
 
-Angry: Acc2 = 0.8315565031982942, binary F1_weighted 0.8273375359951485
+Angry: Acc2 = 0.8560767590618337, binary F1_weighted 0.8557495768079562
 
 ---> Classification for CMU-MOSI
 Tensors /home/koromilas/repos/mlr/MultimodalSDK_loader/cache/cmumosi_20.pkl already exist. Loading from cache directory
 Counter({5: 361, 2: 280, 1: 264, 4: 251, 6: 189, 0: 86, 3: 66})
 
-Acc7 = 0.23323615160349853, Acc2 = 0.6034985422740525, binary F1_weighted 0.6023115837919369
+Acc7 = 0.23469387755102042, Acc2 = 0.5889212827988338, binary F1_weighted 0.5878691170345689
 
 ---> Classification for CMU-MOSEI
 Tensors /home/koromilas/repos/mlr/MultimodalSDK_loader/cache/cmumosei_20.pkl already exist. Loading from cache directory
 Counter({4: 5920, 3: 3971, 2: 2842, 5: 2507, 1: 1743, 0: 660, 6: 555})
 
-Acc7 = 0.3614328614328614, Acc2 = 0.7546117546117546, binary F1_weighted 0.7407193335337049
-
-Representation dimension: 204
----> Classification for IEMOCAP
-
-Neutral: Acc2 = 0.6332622601279317, binary F1_weighted 0.6007745890144243
-
-Happy: Acc2 = 0.8464818763326226, binary F1_weighted 0.7970744726560554
-
-Sad: Acc2 = 0.8059701492537313, binary F1_weighted 0.7888327350588827
-
-Angry: Acc2 = 0.8294243070362474, binary F1_weighted 0.8210307348276042
-
----> Classification for CMU-MOSI
-Tensors /home/koromilas/repos/mlr/MultimodalSDK_loader/cache/cmumosi_20.pkl already exist. Loading from cache directory
-Counter({5: 361, 2: 280, 1: 264, 4: 251, 6: 189, 0: 86, 3: 66})
-
-Acc7 = 0.22448979591836735, Acc2 = 0.5670553935860059, binary F1_weighted 0.567982536862578
-
----> Classification for CMU-MOSEI
-Tensors /home/koromilas/repos/mlr/MultimodalSDK_loader/cache/cmumosei_20.pkl already exist. Loading from cache directory
-Counter({4: 5920, 3: 3971, 2: 2842, 5: 2507, 1: 1743, 0: 660, 6: 555})
-
-Acc7 = 0.36936936936936937, Acc2 = 0.7621192621192621, binary F1_weighted 0.7441903994711028
+Acc7 = 0.379021879021879, Acc2 = 0.7702702702702703, binary F1_weighted 0.7582310402113684
