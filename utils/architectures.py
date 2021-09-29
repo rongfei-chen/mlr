@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch
 
+
 class ConvEncoder(nn.Module):
     def __init__(self, height, width, representation_dim=100, first_channels=32,
                  kernel_size=5, stride=1, padding=2):
@@ -28,14 +29,14 @@ class ConvEncoder(nn.Module):
         self.pool2 = nn.MaxPool2d(kernel_size=2, return_indices=True)
 
         self.conv3 = nn.Sequential(
-            nn.Conv2d(self.cnn_channels * first_channels, (self.cnn_channels ** 2) * first_channels, 3, stride=stride, padding=padding),
+            nn.Conv2d(self.cnn_channels * first_channels, (self.cnn_channels ** 2) * first_channels, kernel_size + 2, stride=stride, padding=padding),
             nn.BatchNorm2d((self.cnn_channels ** 2) * first_channels),
             nn.GELU())
         self.pool3 = nn.MaxPool2d(kernel_size=3, return_indices=True)
 
         self.conv4 = nn.Conv2d(
-            (self.cnn_channels ** 2) * first_channels, representation_dim, 3, stride=stride, padding=padding)
-        self.pool4 = nn.MaxPool2d(kernel_size=4, return_indices=True)
+            (self.cnn_channels ** 2) * first_channels, representation_dim, kernel_size + 2, stride=stride, padding=padding)
+        self.pool4 = nn.MaxPool2d(kernel_size=2, return_indices=True)
 
     def forward(self, x):
         x = self.conv1(x)
@@ -75,17 +76,17 @@ class ConvDecoder(nn.Module):
         self.stride = stride
         self.representation_dim = representation_dim
 
-        self.unpool0 = nn.MaxUnpool2d(kernel_size=4)
+        self.unpool0 = nn.MaxUnpool2d(kernel_size=2)
 
         self.unconv1 = nn.Sequential(
-            nn.ConvTranspose2d(representation_dim, (self.cnn_channels ** 2) * first_channels, 3,
+            nn.ConvTranspose2d(representation_dim, (self.cnn_channels ** 2) * first_channels, kernel_size + 2,
                            stride=stride, padding=padding),
             nn.BatchNorm2d((self.cnn_channels ** 2) * first_channels),
             nn.GELU())
         self.unpool1 = nn.MaxUnpool2d(kernel_size=3)
 
         self.unconv2 = nn.Sequential(
-            nn.ConvTranspose2d((self.cnn_channels ** 2) * first_channels, self.cnn_channels * first_channels, 3,
+            nn.ConvTranspose2d((self.cnn_channels ** 2) * first_channels, self.cnn_channels * first_channels, kernel_size + 2,
                            stride=stride, padding=padding),
             nn.BatchNorm2d(self.cnn_channels * first_channels),
             nn.GELU())
@@ -121,8 +122,8 @@ class ConvDecoder(nn.Module):
 
 
 class ConvAutoEncoder(nn.Module):
-    def __init__(self, height, width, representation_dim=25, first_channels=32,
-                 kernel_size=5, stride=1, padding=2):
+    def __init__(self, height, width, representation_dim=15, first_channels=32,
+                 kernel_size=3, stride=1, padding=2):
         super(ConvAutoEncoder, self).__init__()
 
         self.num_cnn_layers = 4
