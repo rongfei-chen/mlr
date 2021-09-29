@@ -163,7 +163,7 @@ def train_and_validate(task="representation_learning", dataset_name="cmumosei"):
         dataset = dataloading.dataset_features(dataset_name)
 
         train_loader, val_loader, test_loader, batch_size = dataloading.classification_dataloaders(
-            dataset_name, dataset, 1)
+            dataset_name, dataset, 0)
 
         model = architectures.CNN(20, 409).to(device)
         criterion = torch.nn.CrossEntropyLoss()

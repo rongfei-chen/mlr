@@ -157,7 +157,7 @@ class ConvAutoEncoder(nn.Module):
 
 class CNN(nn.Module):
     def __init__(self, height, width, output_dim=7, first_channels=32,
-                 kernel_size=5, stride=1, padding=2, type='classifier', pretrained=True):
+                 kernel_size=5, stride=1, padding=2, type='classifier', pretrained=False):
         super(CNN, self).__init__()
         self.type = type
         self.num_cnn_layers = 4
@@ -176,23 +176,23 @@ class CNN(nn.Module):
             self.pretrained_model = model.encoder
             self.linear_layer1 = nn.Sequential(
                 nn.Dropout(0),
-                nn.Linear(225, 1024),
-                nn.LeakyReLU()
+                nn.Linear(250, 1024),
+                nn.GELU()
             )
 
         else:
             self.conv_layer1 = nn.Sequential(
-                nn.Conv2d(1, first_channels, kernel_size=5,
+                nn.Conv2d(1, first_channels, kernel_size=3,
                           stride=stride, padding=padding),
                 nn.BatchNorm2d(first_channels),
-                nn.LeakyReLU(),
+                nn.GELU(),
                 nn.MaxPool2d(kernel_size=2))
 
             self.conv_layer2 = nn.Sequential(
                 nn.Conv2d(first_channels, self.cnn_channels*first_channels,
-                          kernel_size=5, stride=stride, padding=padding),
+                          kernel_size=3, stride=stride, padding=padding),
                 nn.BatchNorm2d(self.cnn_channels*first_channels),
-                nn.LeakyReLU(),
+                nn.GELU(),
                 nn.MaxPool2d(kernel_size=2)
             )
             self.conv_layer3 = nn.Sequential(
@@ -200,7 +200,7 @@ class CNN(nn.Module):
                           (self.cnn_channels ** 2) * first_channels,
                           kernel_size=5, stride=stride, padding=padding),
                 nn.BatchNorm2d((self.cnn_channels ** 2) * first_channels),
-                nn.LeakyReLU(),
+                nn.GELU(),
                 nn.MaxPool2d(kernel_size=2)
             )
 
@@ -209,25 +209,25 @@ class CNN(nn.Module):
                           (self.cnn_channels**3) * first_channels,
                           kernel_size=5, stride=stride, padding=padding),
                 nn.BatchNorm2d((self.cnn_channels ** 3) * first_channels),
-                nn.LeakyReLU(),
+                nn.GELU(),
                 nn.MaxPool2d(kernel_size=2)
             )
 
             self.linear_layer1 = nn.Sequential(
                 nn.Dropout(0),
                 nn.Linear(self.calc_out_size(), 1024),
-                nn.LeakyReLU()
+                nn.GELU()
             )
 
         self.linear_layer2 = nn.Sequential(
             nn.Dropout(0),
             nn.Linear(1024, 256),
-            nn.LeakyReLU()
+            nn.GELU()
         )
         self.linear_layer3 = nn.Sequential(
             # nn.Dropout(0.2),
             nn.Linear(256, output_dim),
-            nn.LeakyReLU()
+            nn.GELU()
         )
 
     def forward(self, x):

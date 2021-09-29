@@ -1,12 +1,13 @@
 ## Convolutional Autoencoder
-- cmumosei: mse = 0.0004015452756856714
-- cmumosi: mse = 0.000969427235499357
-- iemocap: mse =  0.0005206281587743434
+- cmumosei: mse = 0.0033275857974747513
+- cmumosi: mse = 0.002673047754797153
+- iemocap: mse = 0.00236409244738752
 
-- cmumosei + cmumosi: mse = 0.0004288910031942633
-- cmumosei + iemocap: mse = 0.000507088719467945
+- cmumosei + cmumosi: mse = 0.0030857429281406275
+- cmumosei + iemocap: mse = 0.0031825437421329774
+- cmumosi + iemocap: mse = 0.00279659773923413
 
-- cmumosei + cmumosi + iemocap: mse = 0.0005268202556300701
+- cmumosei + cmumosi + iemocap: mse = 0.0033110019119723783
 
 ## Classification
 
