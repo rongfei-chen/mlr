@@ -139,7 +139,7 @@ class EpochTrain:
         return score
 
 
-def train_and_validate(task="representation_learning", dataset_name="cmumosei"):
+def train_and_validate(task="representation_learning", dataset_name="iemocap"):
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda:0" if use_cuda else "cpu")
     print("Running on: {}".format(device))

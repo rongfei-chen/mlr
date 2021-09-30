@@ -1,4 +1,5 @@
 ## Convolutional Autoencoder
+
 - cmumosei: mse = 0.0033275857974747513
 - cmumosi: mse = 0.002673047754797153
 - iemocap: mse = 0.00236409244738752
@@ -8,6 +9,16 @@
 - cmumosi + iemocap: mse = 0.00279659773923413
 
 - cmumosei + cmumosi + iemocap: mse = 0.0033110019119723783
+
+
+- Modalities combinations
+    - Audio: mse = 0.0037211120736453896
+    - Visual: mse = 0.003448400265499783
+    - Text: mse = 0.0028806257875288255
+    - Audio & Visual: mse = 0.0041999723340108335
+    - Visual & Text: mse = 0.009920017927460332
+    - Audio & Text: mse = 0.0032060799428139004
+    - Audio & Visual & Text: mse = 0.0033110019119723783
 
 ## Classification
 

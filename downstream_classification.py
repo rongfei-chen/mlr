@@ -5,15 +5,7 @@ import torch
 from torch.autograd import Variable
 from imblearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from imblearn.over_sampling import SMOTE
-from imblearn.combine import SMOTETomek
-from sklearn.decomposition import PCA
-from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import RandomForestRegressor
-from imblearn.ensemble import BalancedRandomForestClassifier
-from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
 from collections import Counter
@@ -22,7 +14,6 @@ from collections import Counter
 sys.path.insert(0, os.path.join(
     os.path.dirname(os.path.realpath(__file__)), "../"))
 
-import utils.utils as utils
 import utils.dataloading as dataloading
 import utils.architectures as architectures
 
@@ -85,7 +76,8 @@ for label in range(4):
     preds = pipe.predict(x_test)
     acc_2 = accuracy_score(y_test, preds)
     f1_binary = f1_score(y_test, preds, average='weighted')
-    iemocap_results += "\n{}: Acc2 = {}, binary F1_weighted {}\n".format(iemocap_emotions[label], acc_2, f1_binary)
+    iemocap_results += "\n{}: (Acc2, binary F1_weighted) = ({}, {})\n".format(
+        iemocap_emotions[label], round(acc_2 * 100, 2), round(f1_binary * 100, 2))
 
 print(iemocap_results)
 
@@ -119,7 +111,8 @@ acc_2 = accuracy_score(y_test, preds)
 f1_binary = f1_score(y_test, preds, average='weighted')
 
 
-print("\nAcc7 = {}, Acc2 = {}, binary F1_weighted {}\n".format(acc_7, acc_2, f1_binary))
+print("\n(Acc7, Acc2, binary F1_weighted) = ({}, {}, {})\n".format(
+    round(acc_7 * 100, 2), round(acc_2 * 100, 2), round(f1_binary * 100, 2)))
 
 print("---> Classification for CMU-MOSEI")
 
@@ -148,4 +141,5 @@ y_test = [1 if label >= 0 else 0 for label in y_test]
 preds = [1 if pred >= 0 else 0 for pred in preds]
 acc_2 = accuracy_score(y_test, preds)
 f1_binary = f1_score(y_test, preds, average='weighted')
-print("\nAcc7 = {}, Acc2 = {}, binary F1_weighted {}\n".format(acc_7, acc_2, f1_binary))
+print("\n(Acc7, Acc2, binary F1_weighted) = ({}, {}, {})\n".format(
+    round(acc_7 * 100, 2), round(acc_2 * 100, 2), round(f1_binary * 100, 2)))
