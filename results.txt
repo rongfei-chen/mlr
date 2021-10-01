@@ -12,13 +12,13 @@
 
 
 - Modalities combinations
-    - Audio: mse = 0.0037211120736453896
-    - Visual: mse = 0.003448400265499783
-    - Text: mse = 0.0028806257875288255
-    - Audio & Visual: mse = 0.0041999723340108335
-    - Visual & Text: mse = 0.009920017927460332
-    - Audio & Text: mse = 0.0032060799428139004
-    - Audio & Visual & Text: mse = 0.0033110019119723783
+    - Audio: mse = 0.003516676759837927
+    - Visual: mse = 0.0028565728170655176
+    - Text: mse = 0.009121191580474954
+    - Audio & Visual: mse = 0.0038597782850480315
+    - Visual & Text: mse = 0.007504998638025773
+    - Audio & Text: mse = 0.0029942953650398912
+    - Audio & Visual & Text: mse = 0.0031825437421329774
 
 ## Classification
 

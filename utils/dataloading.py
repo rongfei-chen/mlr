@@ -116,12 +116,12 @@ def representation_dataloaders(test_dataset=None):
 
     if test_dataset is None:
         x_train, y_train, x_val, y_val, x_test, y_test = dataset_features("cmumosei")
-
+        """
         x_train_tmp, y_train_tmp, x_val_tmp, y_val_tmp, x_test_tmp, y_test_tmp = dataset_features("cmumosi")
         x_train = np.concatenate((x_train, x_train_tmp))
         x_val = np.concatenate((x_val, x_val_tmp))
         x_test = np.concatenate((x_test, x_test_tmp))
-
+        """
         x_train_tmp, y_train_tmp, x_val_tmp, y_val_tmp, x_test_tmp, y_test_tmp = dataset_features("iemocap")
         x_train = np.concatenate((x_train, x_train_tmp))
         x_val = np.concatenate((x_val, x_val_tmp))
@@ -131,7 +131,7 @@ def representation_dataloaders(test_dataset=None):
         x_train, y_train, x_val, y_val, x_test, y_test = dataset_features("cmumosei")
         if test_dataset != "cmumosei":
             x_train = np.concatenate((x_train, x_test))
-
+        """
         x_train_tmp, y_train_tmp, x_val_tmp, y_val_tmp, x_test_tmp, y_test_tmp = dataset_features("cmumosi")
         if test_dataset != "cmumosi":
             x_train = np.concatenate((x_train, x_train_tmp))
@@ -141,7 +141,7 @@ def representation_dataloaders(test_dataset=None):
             x_train = np.concatenate((x_train, x_train_tmp))
             x_val = np.concatenate((x_val, x_val_tmp))
             x_test = np.concatenate((x_test, x_test_tmp))
-
+        """
         x_train_tmp, y_train_tmp, x_val_tmp, y_val_tmp, x_test_tmp, y_test_tmp = dataset_features("iemocap")
 
         if test_dataset != "iemocap":
@@ -153,11 +153,11 @@ def representation_dataloaders(test_dataset=None):
             x_val = np.concatenate((x_val, x_val_tmp))
             x_test = np.concatenate((x_test, x_test_tmp))
 
-    #indices_to_keep = list(range(74)) + list(range(-300, 0))
+    indices_to_keep = list(range(74)) + list(range(-300, 0))
 
-    train_set = RepresentationDataset(x_train)
-    val_set = RepresentationDataset(x_val)
-    test_set = RepresentationDataset(x_test)
+    train_set = RepresentationDataset(x_train[:, :, indices_to_keep])
+    val_set = RepresentationDataset(x_val[:, :, indices_to_keep])
+    test_set = RepresentationDataset(x_test[:, :, indices_to_keep])
 
     batch_size = 32
 
