@@ -58,11 +58,10 @@ model = architectures.ConvAutoEncoder(20, 409).to(device)
 model.load_state_dict(torch.load('output/ConvAE.pt'))
 
 model_parameters = filter(lambda p: p.requires_grad, model.parameters())
-params = sum([np.prod(p.size()) for p in model_parameters])
+params = sum(p.numel() for p in model.parameters() if p.requires_grad)
 print("Model parameters of Convolutional Autoencoder: {}".format(params))
 
-model_parameters = filter(lambda p: p.requires_grad, model.encoder.parameters())
-params = sum([np.prod(p.size()) for p in model_parameters])
+params = sum(p.numel() for p in model.encoder.parameters() if p.requires_grad)
 print("Model parameters of Encoder: {}".format(params))
 
 dataset_name = "iemocap"
@@ -100,46 +99,13 @@ for label in range(4):
 print(iemocap_results)
 num_params = sum([a.size for a in pipe["clf"].coef_]) + sum([a.size for a in pipe["clf"].intercept_])
 print("Number of LR parameters: {}".format(num_params))
-"""
-print("---> Classification for CMU-MOSI")
 
-dataset_name = "cmumosi"
-dataset = dataloading.dataset_features(dataset_name)
-
-train_loader, val_loader, test_loader, _ = dataloading.classification_dataloaders(dataset_name, dataset, 1)
-
-x_train, y_train = get_representations(model, train_loader, device)
-x_val, y_val = get_representations(model, val_loader, device)
-x_train = np.concatenate((x_train, x_val))
-y_train = y_train + y_val
-x_test, y_test = get_representations(model, test_loader, device)
-
-print(Counter(y_train))
-pipe = Pipeline([('scaler', StandardScaler()), ('clf', LogisticRegression(random_state=42, max_iter=10000))])
-
-pipe.fit(x_train, y_train)
-preds = pipe.predict(x_test)
-
-preds = np.array(preds) - 3
-y_test = np.array(y_test) - 3
-
-acc_7 = accuracy_score(y_test, preds)
-
-y_test = [1 if label >= 0 else 0 for label in y_test]
-preds = [1 if pred >= 0 else 0 for pred in preds]
-acc_2 = accuracy_score(y_test, preds)
-f1_binary = f1_score(y_test, preds, average='weighted')
-
-
-print("\n(Acc7, Acc2, binary F1_weighted) = ({}, {}, {})\n".format(
-    round(acc_7 * 100, 2), round(acc_2 * 100, 2), round(f1_binary * 100, 2)))
-"""
 print("---> Classification for CMU-MOSEI")
 
 dataset_name = "cmumosei"
 dataset = dataloading.dataset_features(dataset_name)
 
-train_loader, val_loader, test_loader, _ = dataloading.classification_dataloaders(dataset_name, dataset, 1)
+train_loader, val_loader, test_loader, _ = dataloading.classification_dataloaders(dataset_name, dataset, 0)
 x_train, y_train = get_representations(model, train_loader, device)
 x_val, y_val = get_representations(model, val_loader, device)
 x = np.concatenate((x_train, x_val))
@@ -164,17 +130,7 @@ num_params = sum([a.size for a in grid.best_estimator_["clf"].coef_]) \
              + sum([a.size for a in grid.best_estimator_["clf"].intercept_])
 print("Number of LR parameters: {}".format(num_params))
 
-#pipe.fit(x_train, y_train)
-#preds = pipe.predict(x_test)
-
-preds = np.array(preds) - 3
-y_test = np.array(y_test) - 3
-
-acc_7 = accuracy_score(y_test, preds)
-
-y_test = [1 if label >= 0 else 0 for label in y_test]
-preds = [1 if pred >= 0 else 0 for pred in preds]
 acc_2 = accuracy_score(y_test, preds)
 f1_binary = f1_score(y_test, preds, average='weighted')
-print("\n(Acc7, Acc2, binary F1_weighted) = ({}, {}, {})\n".format(
-    round(acc_7 * 100, 2), round(acc_2 * 100, 2), round(f1_binary * 100, 2)))
+print("\n(Acc2, binary F1_weighted) = ({}, {})\n".format(
+    round(acc_2 * 100, 2), round(f1_binary * 100, 2)))
