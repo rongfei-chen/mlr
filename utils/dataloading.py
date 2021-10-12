@@ -10,6 +10,7 @@ from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 from sklearn.preprocessing import StandardScaler
 import pickle
+from matplotlib import pyplot as plt
 
 sys.path.insert(0, os.path.join(
     os.path.dirname(os.path.realpath(__file__)), "../"))
@@ -109,7 +110,7 @@ def dataset_features(dataset_name):
     return x_train, y_train, x_val, y_val, x_test, y_test
 
 
-def representation_dataloaders(test_dataset=None):
+def representation_dataloaders(test_dataset=None, modalities=["audio", "vision", "text"]):
     torch.cuda.empty_cache()
     seed = 42
     utils.seed_all(seed)
@@ -153,7 +154,21 @@ def representation_dataloaders(test_dataset=None):
             x_val = np.concatenate((x_val, x_val_tmp))
             x_test = np.concatenate((x_test, x_test_tmp))
 
-    indices_to_keep = list(range(74)) + list(range(-300, 0))
+    if "audio" in modalities:
+        if "vision" in modalities:
+            if "text" in modalities:
+                indices_to_keep = list(range(409))
+            else:
+                indices_to_keep = list(range(109))
+        elif "text" in modalities:
+            indices_to_keep = list(range(74)) + list(range(-300, 0))
+    elif "vision" in modalities:
+        if "text" in "modalities":
+            indices_to_keep = list(range(74))
+        else:
+            indices_to_keep = list(range(74, 109))
+    else:
+        indices_to_keep = list(range(109, 409))
 
     train_set = RepresentationDataset(x_train[:, :, indices_to_keep])
     val_set = RepresentationDataset(x_val[:, :, indices_to_keep])
