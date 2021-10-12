@@ -35,13 +35,13 @@ train_loader, val_loader, test_loader, _ = dataloading.classification_dataloader
 x_train, y_train = get_representations(model, train_loader, device)
 ```
 
-## Train new representations
+## Train representations
 In order to train representations just run from bash:
 ```
  python3 utils/train.py
 ```
 
-In case you want to include new datasets (that have to be processed by CMU-MultimodalSDK) in the representation learning procedures, you have to firstly include your datasets in the utils.dataloading.representation_dataloaders function. 
+In case you want to use new datasets (that have to been processed by CMU-MultimodalSDK) in the representation learning procedures, you have to firstly include them in the utils.dataloading.representation_dataloaders function. 
 
 ## Dowstream Classification
 
