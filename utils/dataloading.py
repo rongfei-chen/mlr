@@ -159,16 +159,16 @@ def representation_dataloaders(test_dataset=None, modalities=["audio", "vision",
             if "text" in modalities:
                 indices_to_keep = list(range(409))
             else:
-                indices_to_keep = list(range(109))
+                indices_to_keep = list(range(74)) + list(range(-35, 0))
         elif "text" in modalities:
-            indices_to_keep = list(range(74)) + list(range(-300, 0))
+            indices_to_keep = list(range(374))
     elif "vision" in modalities:
         if "text" in "modalities":
-            indices_to_keep = list(range(74))
+            indices_to_keep = list(range(74, 409))
         else:
-            indices_to_keep = list(range(74, 109))
+            indices_to_keep = list(range(374, 409))
     else:
-        indices_to_keep = list(range(109, 409))
+        indices_to_keep = list(range(74, 374))
 
     train_set = RepresentationDataset(x_train[:, :, indices_to_keep])
     val_set = RepresentationDataset(x_val[:, :, indices_to_keep])
